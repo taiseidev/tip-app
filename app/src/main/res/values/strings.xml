@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Tip App</string>
+    <string name="bill_amount">Bill Amount</string>
 </resources>
