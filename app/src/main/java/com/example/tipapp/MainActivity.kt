@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tipapp.ui.theme.TipAppTheme
+import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    TipApp()
+                    TipTimeLayout()
                 }
             }
         }
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TipApp(modifier: Modifier = Modifier) {
+fun TipTimeLayout(modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
     ) {
@@ -60,7 +61,10 @@ fun TipApp(modifier: Modifier = Modifier) {
                 .padding(start = 64.dp)
         )
         EditNumberField()
-        Text(text = "Tip Amount: $00", fontSize = 36.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = stringResource(R.string.tip_amount, "$0.00"),
+            style = MaterialTheme.typography.displaySmall
+        )
     }
 }
 
@@ -68,6 +72,10 @@ fun TipApp(modifier: Modifier = Modifier) {
 @Composable
 fun EditNumberField(modifier: Modifier = Modifier) {
     var amountInput by remember { mutableStateOf("0") }
+
+    val amount = amountInput.toDoubleOrNull() ?: 0.0;
+    val tip = calculateTip(amount);
+
     TextField(
         value = amountInput,
         onValueChange = { amountInput = it },
@@ -80,10 +88,15 @@ fun EditNumberField(modifier: Modifier = Modifier) {
     )
 }
 
+private fun calculateTip(amount: Double, tipPercent: Double = 15.0): String {
+    val tip = tipPercent / 100 * amount
+    return NumberFormat.getCurrencyInstance().format(tip)
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     TipAppTheme {
-        TipApp()
+        TipTimeLayout()
     }
 }
